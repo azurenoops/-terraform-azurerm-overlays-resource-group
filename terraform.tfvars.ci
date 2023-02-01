@@ -1,0 +1,8 @@
+location    = "East US"
+org_name    = "anoa"
+environment = "test"
+workload    = "ci"
+
+add_tags = {
+  foo = "bar"
+}
