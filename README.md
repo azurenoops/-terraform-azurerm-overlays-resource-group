@@ -1,32 +1,37 @@
 # Azure Resource Group Overlay
 
-[![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![MIT License](https://img.shields.io/badge/license-Apache%20V2-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/azurenoops/rg/azurerm/)
+[![Changelog](https://img.shields.io/badge/changelog-release-green.svg)](CHANGELOG.md) [![Notice](https://img.shields.io/badge/notice-copyright-yellow.svg)](NOTICE) [![MIT License](https://img.shields.io/badge/license-MIT%20V2-orange.svg)](LICENSE) [![TF Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/modules/azurenoops/overlays-resource-group/azurerm/)
 
 Azure NoOps Accelerator terraform module that creates a Resource Group with optional resource lock that can be used with a [SCCA compliant Network]().
 
 ## Naming
 
-Resource naming is based on the [Azure NoOps Accelerator Naming Utils](https://registry.terraform.io/providers/azurenoops/deployutils/latest/docs/resources/azurenoops_resource_name) to generate resource names.
+Resource naming is based on the [Azure NoOps Accelerator Naming Utils](https://registry.terraform.io/providers/azurenoops/azurenoopsutils/latest/docs/resources/azurenoopsutils_resource_name) to generate resource names.
+
+## AZ Regions Lookup
+
+This module uses the [AZ Regions Lookup](https://registry.terraform.io/modules/azurenoops/overlays-azregions-lookup/azurerm) module to lookup the short name for the Azure region.
 
 ## Usage
 
 ```hcl
 module "mod_location" {
-  source  = "azurenoops/azregions/azurerm"
+  source  = "azurenoops/overlays-azregions-lookup/azurerm"
   version = "~> 1.0"
 
   azure_region = var.location
 }
 
 module "mod_rg" {
-  source  = "azurenoops/rg/azurerm"
+  source  = "azurenoops/overlays-resource-group/azurerm"
   version = "~> 1.0"
 
-  org_name = "myorg"
-  environment = "dev"
-  workload = "myapp"
-  location = "eastus"
-  lock_level = "ReadOnly"
+  org_name              = "myorg"
+  environment           = "dev"
+  workload              = "myapp"
+  location              = mod_location.location_short # Add the location short name
+  enable_resource_locks = true
+  lock_level            = "ReadOnly"
 }
 ```
 
@@ -34,12 +39,14 @@ module "mod_rg" {
 
 | Name | Version |
 |------|---------|
-| azurenoops | ~> 1.2 |
+| azurenoops | ~> 1.0 |
 | azurerm | >= 1.32 |
 
 ## Modules
 
-No modules.
+| Name | Version |
+|------|---------|
+| azurenoops/overlays-azregions-lookup/azurerm | ~> 1.0 |
 
 ## Resources
 
@@ -47,7 +54,7 @@ No modules.
 |------|------|
 | [azurerm_management_lock.resource_group_level_lock](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_lock) | resource |
 | [azurerm_resource_group.main_rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
-| [azurenoops_resource_name.rg](https://registry.terraform.io/providers/azurenoops/deplpyutils/latest/docs/data-sources/name) | data source |
+| [azurenoopsutils_resource_name.rg](https://registry.terraform.io/providers/azurenoops/azurenoopsutils/latest/docs/data-sources/azurenoopsutils_resource_name) | data source |
 
 ## Inputs
 

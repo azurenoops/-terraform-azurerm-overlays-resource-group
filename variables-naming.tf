@@ -25,3 +25,8 @@ variable "use_naming" {
   type        = bool
   default     = true
 }
+
+variable "use_location_short_name" {
+  description = "Use Short Location Name in the naming provider to generate default resource name."
+  type        = bool
+}

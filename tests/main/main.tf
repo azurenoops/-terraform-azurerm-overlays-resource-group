@@ -53,6 +53,12 @@ variable "custom_resource_group_name" {
   default     = null
 }
 
+variable "use_location_short_name" {
+  description = "Use Short Location Name in the naming provider to generate default resource name."
+  type        = bool
+  default     = false
+}
+
 # ---------------
 # CREATE THE RG
 # ---------------
@@ -63,6 +69,7 @@ module "rg" {
   org_name       = var.org_name
   environment    = var.environment
   workload_name  = var.workload_name
+  use_location_short_name = var.use_location_short_name
   custom_rg_name = var.custom_resource_group_name != null ? var.custom_resource_group_name : null
 
   add_tags = var.add_tags

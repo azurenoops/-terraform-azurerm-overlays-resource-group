@@ -2,7 +2,7 @@
 # CONFIGURE OUR AZURE PROVIDER
 # --------------------------
 
-provider "azurerm" {  
+provider "azurerm" {
   features {}
 }
 
@@ -12,21 +12,25 @@ provider "azurerm" {
 variable "location" {
   description = "Azure region in which instance will be hosted"
   type        = string
+  default     = "eastus"
 }
 
 variable "environment" {
   description = "Name of the workload's environnement"
   type        = string
+  default     = "dev"
 }
 
 variable "workload_name" {
   description = "Name of the workload_name"
   type        = string
+  default     = "workload"
 }
 
 variable "org_name" {
   description = "Name of the organization"
   type        = string
+  default     = "anoa"
 }
 
 variable "add_tags" {
@@ -53,18 +57,32 @@ variable "custom_resource_group_name" {
   default     = null
 }
 
+variable "use_location_short_name" {
+  description = "Use Short Location Name in the naming provider to generate default resource name."
+  type        = bool
+  default     = false
+}
+
 # ---------------
 # CREATE THE RG
 # ---------------
 module "rg" {
-  source = "azurenoops/azurerm/resource_group"
+  source = "azurenoops/overlays-resource-group/azurerm"
+  version = "~> 1.0"
 
-  location       = var.location  
+  // Resource group name and location
+  location       = var.location # This is the short location name (e.g. "eus")
   org_name       = var.org_name
   environment    = var.environment
   workload_name  = var.workload_name
+  use_location_short_name = var.use_location_short_name # This is to enable short location name (e.g. "eus") as part of the resource group name
   custom_rg_name = var.custom_resource_group_name != null ? var.custom_resource_group_name : null
 
+  // Enable resource locks
+  enable_resource_locks = var.enable_resource_locks
+  lock_level            = var.lock_level
+
+  // Add tags
   add_tags = var.add_tags
 }
 
